@@ -21,13 +21,6 @@ import androidx.compose.ui.unit.dp
 import java.io.File
 import java.io.FileOutputStream
 
-@Preview
-@Composable
-fun AddFoodItemScreenPreview() {
-    val context = LocalContext.current
-    AddFoodItemScreen(context)
-}
-
 @Composable
 fun AddFoodItemScreen(context: Context) {
     var name by remember { mutableStateOf("") }
@@ -41,7 +34,7 @@ fun AddFoodItemScreen(context: Context) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(color = Color.Gray), // Set background color to beige
+            .background(color = Color.Gray), // Set background color to gray
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -75,42 +68,40 @@ fun AddFoodItemScreen(context: Context) {
                 label = { Text("Type", color = Color.Blue) }, // Set text color to blue
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
-                    Text(
-                        text = "\u25BE",
-                        color = Color.Blue, // Set text color to blue
-                        modifier = Modifier.clickable { expanded = !expanded }
-                    )
+                    Box(modifier = Modifier.clickable { expanded = true }) {
+                        Text("▼")
+                    }
                 }
             )
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
+                onDismissRequest = { expanded = false }
             ) {
                 types.forEach { type ->
                     DropdownMenuItem(onClick = {
                         selectedType = type
                         expanded = false
                     }) {
-                        Text(text = type, color = Color.Blue) // Set text color to blue
+                        Text(type)
                     }
                 }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                // Save the food item
-                saveFoodItem(context, FoodItem(name, description, price.toDouble(), selectedType))
-            },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text("Save", color = Color.Magenta) // Set text color to blue
+        Button(onClick = {
+            if (name.isNotEmpty() && description.isNotEmpty() && price.isNotEmpty()) {
+                val foodItem = FoodItem(name, description, price.toDoubleOrNull() ?: 0.0, selectedType)
+                saveFoodItem(context, foodItem)
+                name = ""
+                description = ""
+                price = ""
+                selectedType = types[0]
+            }
+        }) {
+            Text("Save Food Item")
         }
     }
 }
-
-data class FoodItem(val name: String, val description: String, val price: Double, val type: String)
 
 fun saveFoodItem(context: Context, foodItem: FoodItem) {
     val filename = "food_items.csv"
@@ -119,4 +110,10 @@ fun saveFoodItem(context: Context, foodItem: FoodItem) {
     FileOutputStream(file, true).bufferedWriter().use { writer ->
         writer.write(foodItemString)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AddFoodItemScreenPreview() {
+    AddFoodItemScreen(context = LocalContext.current)
 }
