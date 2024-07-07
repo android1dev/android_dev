@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
 import com.example.myapplication.FoodItem
-import com.example.myapplication.MyText
 
 data class FoodItem(val name: String, val description: String, val price: Double, val type: String)
 
@@ -28,6 +27,11 @@ fun FoodItemRow(foodItem: FoodItem) {
         }
         MyText(text = "${foodItem.price}", style = MaterialTheme.typography.bodyLarge)
     }
+}
+
+@Composable
+fun MyText(text: String, style: TextStyle) {
+    TODO("Not yet implemented")
 }
 
 @Preview(showBackground = true)
